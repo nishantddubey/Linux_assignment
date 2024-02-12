@@ -1,4 +1,4 @@
-#Question: Configure smtp in localhost.
+# Question: Configure smtp in localhost.
 
 Solution:
 
