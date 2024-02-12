@@ -75,11 +75,11 @@ apt-get install postfix
 	smtp_tls_CAfile = /etc/ssl/certs/ca-certificates.crt
    ```   
 
-8. After doing all configuration restart the postfix using systemctl command
+7. After doing all configuration restart the postfix using systemctl command
 ```bash
 	systemctl restart postfix
 ```
-7. All the configuration  has been completed. Now test sending email
+8. All the configuration  has been completed. Now test sending email
 
 we will use sendmail command  to send the email.
 ```bash
