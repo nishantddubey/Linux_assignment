@@ -438,3 +438,7 @@ systemctl stop showtime
 ```
 
 
+# 4. write a command that search research file in system and uncompress it.
+```bash
+find / -name research.* -exec gunzip {} \;
+```
