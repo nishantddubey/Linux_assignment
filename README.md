@@ -9,8 +9,9 @@ To Configure smtp in localhost wee will use postfix .
 Steps:
 
 1.To install package in system we need sudo access. By using sudo command we login as  root user.
+```bash
 >> sudo su
-
+```
 
 2. Install postfix using apt-get install postfix command.
 >> sudo apt-get install postfix 
@@ -55,7 +56,7 @@ or
 
 
     • Also add some configuration at the end of the file
-	
+	#enable SASL authentication
 	smtp_sasl_auth_enable = yes
 	smtp_sasl_security_options = noanonymous
 	smtp_sasl_password_maps = hash:/etc/postfix/sasl/sasl_passwd
@@ -90,23 +91,299 @@ steps:
 1. To create a user we have to be a root user.
 >> sudo su
 
-
-
-
-
 2. To create a user in local host we can use useradd command .
 >> useradd nishant
 
 3. Add password for user using passwd commands.
 >> passwd nishant
 
-
-
 4. To restrict the sudo permission for the user we will remove it from sudo group.
 >> deluser nishant sudo
 
-
-
 Now user is unable to execute sudo commands.
+
+
+
+# Configure your system in such a way that when a user type and executes a describe command from anywhere of the system it must list all the files and folders of the user's current directory.
+
+Ex:- $ describe
+$ content1 content2
+Content3 content 4
+
+
+Solution:
+
+1. To achieve this for a particular user we can add aliasing in .bashrc file.
+
+Steps:
+
+1. Go to the home directory of that user by using cd commands
+>> cd
+
+2.Look for .bashrc file using ls -a command
+>> ls -a  .bashrc
+
+3. Open that file using editor like vi or nano
+>> nano  .bashrc
+
+4. Add the aliasing in the file or end of the file
+>> alias describe = ‘ls’
+and save the file.
+
+5. After adding the aliasing run source .bashrc command so that it come into effect.
+>> source  .bashrc
+
+Now when you run  $ describe command it will display list of directories and files of the user’s current directory.
+
+2. To achieve this for all user of the system we can add the aliasing globally in .bashrc file of  /etc.
+
+Steps:
+1. Switch to root user by using sudo su command.
+>> sudo su
+
+1. Go to the /etc directory  by using cd commands
+>> cd /etc
+
+2.Look for bashrc file using ls -a command
+>> ls -a bashrc
+
+3. Open that file using editor like vi or nano
+>> vi  bashrc
+
+4. Add the aliasing in the file or end of the file
+>> alias describe = ‘ls’
+and save the file.
+
+5. After adding the aliasing run source .bashrc command so that it come into effect.
+>> source  .bashrc
+
+Now when you run  $ describe command by any user of the  system it will display list of directories and files of the user’s current directory.
+
+
+
+# Question: Users can put a compressed file at any path of the linux file system. The name of the file 	 will be research and the extension will be of compression type, example for gzip type extension will be .gz. You have to find the file and check the compression type and uncompress it. 
+
+Solution:
+
+To achieve thjs we can write a script with find a file starts with research. After that it will check the compression type of file and uncompress it if possible.
+
+
+Explanations of all steps :
+
+1. Create a script file with sudo access so that it can  decompress the file of any location in our file system.
+    • Switch to root user 
+          
+2. Create a script file using file editor.
+eg . Decompress.sh (providing .sh is not mandatory to increase the readability I have given) 
+       
+3. write the script in file:
+   
+#!/bin/bash
+
+echo Searching for research file  in your system...
+
+#searhing the file
+
+file=$(find / -name "research.*" 2>/dev/null )
+
+#checking if the exist or not
+if [ -z "$file" ];
+then
+ 
+  echo "Sorry! No research file available in your System"
+  exit 1
+fi
+
+echo The available file is "$file"
+
+#check file extension to find compression type
+type="${file##*.}"
+
+#uncompressing the file 
+
+case "$type" in
+#if giz compressed file found
+gz) echo uncompressing  "$file"
+    gzip -d "$file"
+;;
+
+#if zip compressed file found
+zip) echo  uncompressing "$file"
+     unzip "$file"
+;;
+# for other type of file
+*) echo "unknown compression file type $file"
+exit 1
+;; 
+esac
+
+echo "File uncomprssed successfully"
+
+file=$(find / -name "research.*" 2>/dev/null )
+
+> it will search for the file whose name starts with research and ends with any extension.
+Like research.txt , research.gip etc and store the file path in file variable.
+
+if [ -z "$file" ];
+then
+  echo "Sorry! No research file available in your System"
+  exit 1
+fi
+
+> this step will check that the availability of research file.
+If the file variable is empty then it will execute this statement and display “Sorry! No research file available in your system.
+And exit 1 will exit the execution  of script.
+
+echo The available file is "$file"
+
+>if file is available in system it will display the file name 
+  
+type="${file##*.}"
+
+> in this step it will extract the extension of available research file and store it in type variable.
+Eg if the research.gz file is available then it will extract the gz and store it in type variable.
+
+
+Now we will use case statement to decompress the file.
+
+Case "$type" in
+#if giz compressed file found
+gz) echo uncompressing  "$file"
+    gzip -d "$file"
+;;
+
+#if zip compressed file found
+zip) echo  uncompressing "$file"
+     unzip "$file"
+;;
+
+#if bzip2 compressed file found
+bz2) echo uncompressing "$file"
+     bzip2 -d "$file"
+;;
+
+#if xz compressed file found
+xz) echo uncompressing "$file"
+    xz -d "$file"
+;;
+
+#for other type of file
+*) echo "unknown compression file type $file"
+exit 1
+;; 
+
+esac
+
+
+it will check the file extension and decompress accordingly. If the file with different extension which cannot be  decompressed then it will display “unknown compression file type <with file path>”
+
+echo "File uncomprssed successfully"
+> After successful decompression of file it will display “File uncompressed successful”
+
+
+# Configure your system in such a way that any user of your system creates a file then there should not be permission to do any activity in that file.
+
+Solution:
+
+Steps:
+
+To set default permission of a file creation we can use umask command.
+
+1. To apply this configuration to all users of system we have to add umask permission in bashrc file of /etc directory.
+
+Become root user using sudo su command.
+>> sudo su
+
+Go the /etc dir and look for bashrc file.
+>> cd /etc
+>> ls bashrc
+
+2. Open the file using file editor like vi or nano
+>> nano basrc
+
+3. Set default configuration for file permission
+umask  u-rwx
+save the file
+
+4. After adding the configuration run source bashrc command so that configuration come into effect.
+>> source bashrc
+
+Now if a user creates a file he will not able to any activity in that file.
+
+
+
+# Question: Create a service with the name showtime , after starting the service, every minute it should print the current time in a file in the user home directory. 
+Ex:-
+sudo service showtime start -> It should start writing in file.
+sudo service showtime stop -> It should stop writing in file.
+sudo service showtime status -> It should show status.
+
+
+Solution: 
+To achieve this we can write a script which writes current time in users home directory.
+And then create a systemd service unit  file which manage the execution of that script.
+After creating the systemd we can stat stop and  check the status of service as per the requirements.
+
+Steps:
+
+1. For creating service we need sudo access so first switch user to root or we can also do that sudo access users.
+>> sudo su
+  
+
+2. switch to home directory of the root user using cd command.
+>> cd
+  
+
+3. Create a script file like showtime.sh  using file editor like  vim or  nano (giving .sh extension is not mandatory to increase the readability we can do that).
+>> nano showtime.sh
+
+4. create a scripts which writes current time in a file after every minutes in user’s home directory here user is root so it will write in root’s home directory with filename showtime.txt
+So script is like :
+
+#!/bin/bash
+while true;
+do 
+echo $(date +%T) >> /root/showtime.txt
+sleep 60
+done
+
+Script has been  completed. Now we will create service.
+
+5. To create a systemd service we have to change the directory to /etc/systemd/system
+>> cd /etc/systemd/system
+ 
+6.  create a systemd unit file with showtime name (eg. showtime.service) using file editor.
+>> nano showtime.service
+
+7.  Write all the required configurations like:
+
+[Unit]
+Description=Showtime Service
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/root/showtime.sh
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+
+8.  Now reload and start the systemd service using systemctl commands:
+    • To reload the  systemd configuration files to apply changes in services:
+		>>  systemctl daemon-reload
+	
+
+    • To start the showtime service :
+              >>  systemctl start showtime
+
+The system get started it will start writing current time in showtime.txt file in user’s  home directory.
+	
+9. To check the status of service we uses systemctl status showtime.
+>> systemctl status showtime
+
+10. To stop the service we can use systemctl stop showtime.
+>> systemctl stop showtime
+
 
 
