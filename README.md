@@ -1,5 +1,5 @@
 # Linux_assignment
-Que: Configure smtp in localhost.
+#Question: Configure smtp in localhost.
 
 Solution:
 
@@ -57,7 +57,6 @@ or
 
     • Also add some configuration at the end of the file
 	
-	# Enable SASL authentication
 	smtp_sasl_auth_enable = yes
 	smtp_sasl_security_options = noanonymous
 	smtp_sasl_password_maps = hash:/etc/postfix/sasl/sasl_passwd
@@ -79,5 +78,36 @@ This mail is for testing the SMTP setup in Linux
   
 Note: After completion of mail writing use ‘.’ or ctrl+d to exit and mail will  get send to the recipient’s mail  
 
+
+
+
+
+# Question: Create a user in your localhost, which should not be able to execute the sudo command.
+
+Solution:
+
+steps:
+
+1. To create a user we have to be a root user.
+>> sudo su
+
+
+
+
+
+2. To create a user in local host we can use useradd command .
+>> useradd nishant
+
+3. Add password for user using passwd commands.
+>> passwd nishant
+
+
+
+4. To restrict the sudo permission for the user we will remove it from sudo group.
+>> deluser nishant sudo
+
+
+
+Now user is unable to execute sudo commands.
 
 
