@@ -10,14 +10,17 @@ Steps:
 
 1.To install package in system we need sudo access. By using sudo command we login as  root user.
 ```bash
->> sudo su
+sudo su
 ```
 
 2. Install postfix using apt-get install postfix command.
->> sudo apt-get install postfix 
+```bash
+sudo apt-get install postfix 
+```
 or
->> apt-get install postfix
-
+```bash
+apt-get install postfix
+```
 
 3.  After installation a pop-up configuration will be visible on screen complete the configuration as per the requirements.
 
@@ -25,57 +28,66 @@ or
       
     • Go to sasl directory present in /etc/postfix location
       
-      >> cd /etc/postfix/sasl
+      ```bash
+      cd /etc/postfix/sasl
 
+      ```
 
     • create a sasl_passwd file using file editor to store gmail credentials.
-      
-      >> nano  sasl_passwd
+      ```bash
+      nano  sasl_passwd
+
+      ```
       
     • save credentials in format shown below
+   ```bash
       [smtp.gmail.com]:587 nishant.kumar@gmail.com:qodjkozoaqdmyqll
-
+   ```
     • Create a hash database file using postmap command.
-      >> postmap sasl_passwd
+```bash
+      postmap sasl_passwd
+```
       
-      
-5. To use gmail to send mail  using postfix we have to do some configuration in main.cf file.
+6. To use gmail to send mail  using postfix we have to do some configuration in main.cf file.
     main.cf  file present in location /etc/postfix
 
 
     • open main.cf file using file editor 
-      
-      >> nano main.cf
+      ```bash
+      nano main.cf
+      ```
         
 
     • set relayhost value 
-      
+      ```bash
       relayhost = [smtp.gmail.com]:587
-      
+      ```
 
 
 
     • Also add some configuration at the end of the file
+   ```bash
 	#enable SASL authentication
 	smtp_sasl_auth_enable = yes
 	smtp_sasl_security_options = noanonymous
 	smtp_sasl_password_maps = hash:/etc/postfix/sasl/sasl_passwd
 	smtp_tls_security_level = encrypt
 	smtp_tls_CAfile = /etc/ssl/certs/ca-certificates.crt
-	     
+   ```   
 
-6. After doing all configuration restart the postfix using systemctl command
->> systemctl restart postfix
-    
+8. After doing all configuration restart the postfix using systemctl command
+```bash
+	systemctl restart postfix
+```
 7. All the configuration  has been completed. Now test sending email
 
 we will use sendmail command  to send the email.
-
->> sendmail nishantddubey4@gmail.com
+```bash
+sendmail nishantddubey4@gmail.com
 subject: SMTP setup Test mail
 This mail is for testing the SMTP setup in Linux
 .
-  
+```
 Note: After completion of mail writing use ‘.’ or ctrl+d to exit and mail will  get send to the recipient’s mail  
 
 
@@ -89,17 +101,21 @@ Solution:
 steps:
 
 1. To create a user we have to be a root user.
->> sudo su
-
+```bash
+	sudo su
+```
 2. To create a user in local host we can use useradd command .
->> useradd nishant
-
+```bash
+useradd nishant
+```
 3. Add password for user using passwd commands.
->> passwd nishant
-
+```bash
+passwd nishant
+```
 4. To restrict the sudo permission for the user we will remove it from sudo group.
->> deluser nishant sudo
-
+```bash
+deluser nishant sudo
+```
 Now user is unable to execute sudo commands.
 
 
@@ -118,45 +134,60 @@ Solution:
 Steps:
 
 1. Go to the home directory of that user by using cd commands
->> cd
+```bash
+cd
+```
 
 2.Look for .bashrc file using ls -a command
->> ls -a  .bashrc
+```bash
+ls -a  .bashrc
+```
 
 3. Open that file using editor like vi or nano
->> nano  .bashrc
-
+```bash
+nano  .bashrc
+```
 4. Add the aliasing in the file or end of the file
->> alias describe = ‘ls’
+```bash
+alias describe = ‘ls’
+```
 and save the file.
 
 5. After adding the aliasing run source .bashrc command so that it come into effect.
->> source  .bashrc
-
+```bash
+source  .bashrc
+```
 Now when you run  $ describe command it will display list of directories and files of the user’s current directory.
 
 2. To achieve this for all user of the system we can add the aliasing globally in .bashrc file of  /etc.
 
 Steps:
 1. Switch to root user by using sudo su command.
->> sudo su
-
+```bash
+sudo su
+```
 1. Go to the /etc directory  by using cd commands
->> cd /etc
-
+```bash
+cd /etc
+```
 2.Look for bashrc file using ls -a command
->> ls -a bashrc
-
+```bash
+ls -a bashrc
+```
 3. Open that file using editor like vi or nano
->> vi  bashrc
-
+```bash
+vi  bashrc
+```
 4. Add the aliasing in the file or end of the file
->> alias describe = ‘ls’
+```bash
+alias describe = ‘ls’
+```
 and save the file.
 
 5. After adding the aliasing run source .bashrc command so that it come into effect.
->> source  .bashrc
-
+```bash
+   source  .bashrc
+```
 Now when you run  $ describe command by any user of the  system it will display list of directories and files of the user’s current directory.
 
 
@@ -172,12 +203,12 @@ Explanations of all steps :
 
 1. Create a script file with sudo access so that it can  decompress the file of any location in our file system.
     • Switch to root user 
-          
+	  
 2. Create a script file using file editor.
 eg . Decompress.sh (providing .sh is not mandatory to increase the readability I have given) 
        
 3. write the script in file:
-   
+```bash
 #!/bin/bash
 
 echo Searching for research file  in your system...
@@ -218,34 +249,35 @@ exit 1
 esac
 
 echo "File uncomprssed successfully"
-
+```
+```bash
 file=$(find / -name "research.*" 2>/dev/null )
-
+```
 > it will search for the file whose name starts with research and ends with any extension.
 Like research.txt , research.gip etc and store the file path in file variable.
-
+```bash
 if [ -z "$file" ];
 then
   echo "Sorry! No research file available in your System"
   exit 1
 fi
-
+```
 > this step will check that the availability of research file.
 If the file variable is empty then it will execute this statement and display “Sorry! No research file available in your system.
 And exit 1 will exit the execution  of script.
-
+```bash
 echo The available file is "$file"
-
+```
 >if file is available in system it will display the file name 
-  
+```bash
 type="${file##*.}"
-
+```
 > in this step it will extract the extension of available research file and store it in type variable.
 Eg if the research.gz file is available then it will extract the gz and store it in type variable.
 
 
 Now we will use case statement to decompress the file.
-
+```bash
 Case "$type" in
 #if giz compressed file found
 gz) echo uncompressing  "$file"
@@ -273,11 +305,12 @@ exit 1
 ;; 
 
 esac
-
+```
 
 it will check the file extension and decompress accordingly. If the file with different extension which cannot be  decompressed then it will display “unknown compression file type <with file path>”
-
+```bash
 echo "File uncomprssed successfully"
+```
 > After successful decompression of file it will display “File uncompressed successful”
 
 
@@ -292,22 +325,30 @@ To set default permission of a file creation we can use umask command.
 1. To apply this configuration to all users of system we have to add umask permission in bashrc file of /etc directory.
 
 Become root user using sudo su command.
->> sudo su
-
+```bash
+sudo su
+```
 Go the /etc dir and look for bashrc file.
->> cd /etc
->> ls bashrc
-
+```bash
+cd /etc
+```
+```bash
+ls bashrc
+```
 2. Open the file using file editor like vi or nano
->> nano basrc
-
-3. Set default configuration for file permission
+```bash
+   nano basrc
+```
+4. Set default configuration for file permission
+```bash
 umask  u-rwx
 save the file
+```
 
-4. After adding the configuration run source bashrc command so that configuration come into effect.
->> source bashrc
-
+6. After adding the configuration run source bashrc command so that configuration come into effect.
+```bash
+source bashrc
+```
 Now if a user creates a file he will not able to any activity in that file.
 
 
@@ -327,36 +368,41 @@ After creating the systemd we can stat stop and  check the status of service as 
 Steps:
 
 1. For creating service we need sudo access so first switch user to root or we can also do that sudo access users.
->> sudo su
-  
+```bash
+sudo su
+```  
 
 2. switch to home directory of the root user using cd command.
->> cd
-  
+```bash
+   cd
+```
 
-3. Create a script file like showtime.sh  using file editor like  vim or  nano (giving .sh extension is not mandatory to increase the readability we can do that).
->> nano showtime.sh
-
+4. Create a script file like showtime.sh  using file editor like  vim or  nano (giving .sh extension is not mandatory to increase the readability we can do that).
+```bash
+nano showtime.sh
+```
 4. create a scripts which writes current time in a file after every minutes in user’s home directory here user is root so it will write in root’s home directory with filename showtime.txt
 So script is like :
-
+```bash
 #!/bin/bash
 while true;
 do 
 echo $(date +%T) >> /root/showtime.txt
 sleep 60
 done
-
+```
 Script has been  completed. Now we will create service.
 
 5. To create a systemd service we have to change the directory to /etc/systemd/system
->> cd /etc/systemd/system
- 
+```bash
+cd /etc/systemd/system
+``` 
 6.  create a systemd unit file with showtime name (eg. showtime.service) using file editor.
->> nano showtime.service
-
+```bash
+nano showtime.service
+```
 7.  Write all the required configurations like:
-
+```bash
 [Unit]
 Description=Showtime Service
 After=network.target
@@ -368,22 +414,27 @@ Restart=always
 
 [Install]
 WantedBy=multi-user.target
-
+```
 8.  Now reload and start the systemd service using systemctl commands:
     • To reload the  systemd configuration files to apply changes in services:
-		>>  systemctl daemon-reload
-	
+	```bash
+ 	systemctl daemon-reload
+	```
 
     • To start the showtime service :
-              >>  systemctl start showtime
-
+   ```bash
+   	systemctl start showtime
+```
+    
 The system get started it will start writing current time in showtime.txt file in user’s  home directory.
 	
-9. To check the status of service we uses systemctl status showtime.
->> systemctl status showtime
-
+10. To check the status of service we uses systemctl status showtime.
+```bash
+systemctl status showtime
+```
 10. To stop the service we can use systemctl stop showtime.
->> systemctl stop showtime
-
+```bash
+systemctl stop showtime
+```
 
 
