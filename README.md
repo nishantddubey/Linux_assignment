@@ -1,4 +1,3 @@
-# Linux_assignment
 #Question: Configure smtp in localhost.
 
 Solution:
